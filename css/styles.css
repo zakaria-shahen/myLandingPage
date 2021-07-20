@@ -10,6 +10,11 @@
 
 /* ---- Base Rules ---- */
 
+html {
+    scroll-behavior: smooth;
+}
+
+
 body {
     background: rgb(136,203,171);
     background: linear-gradient(0deg, rgba(136,203,171,1) 0%, rgba(0,13,60,1) 100%);
@@ -70,17 +75,17 @@ section {
 }
 
 .navbar__menu__hidden {
-    display: none;;
+    display: none;
 }
 
 
 .navbar__menu li {
-    display: inline-block;
+    display: none;
 }
 
 .navbar__menu .menu__link {
     display: block;
-    padding: 1em;
+    padding: 1.5em;
     font-weight: bold;
     text-decoration: none;
     color: #000;
@@ -92,12 +97,51 @@ section {
     transition: ease 0.3s all;
 }
 
+
 .active {
     background: #333;
     color: #cc1 !important;
     transition: ease 0.3s all;
 }
 
+
+.navbar__menu__show li {
+    display: block;
+    text-align: left;
+}
+
+.navbar__menu li:first-child {
+    display: inline-block;
+    text-align: right;
+}
+
+.navbar__menu .menu__link__phone {
+    font-size: 2.5em;
+    padding: 0.3em;
+}
+
+
+@media only screen and (min-width: 35em) {
+    .navbar__menu li {
+        display: inline-block;
+    }
+
+    .navbar__menu .menu__link {
+        padding: 1em;
+    }
+
+
+    .navbar__menu .menu__link__phone {
+        display: none;
+    }
+
+    .navbar__menu ul {
+        text-align: left;
+    }
+
+
+
+}
 
 
 /* Header Styles */
@@ -124,7 +168,7 @@ section {
 /* ---- Theme Rules ---- */
 /* Landing Container Styles */
 .landing__container {
-    padding: 1em;
+    padding: 1.8em 1em;
     text-align: left;
 }
 
@@ -138,7 +182,7 @@ section {
 section:nth-of-type(even) .landing__container {
     margin-right: 0;
     margin-left: auto;
-    text-align: right; 
+    /* text-align: right;  */
 }
 
 /* Background Circles */

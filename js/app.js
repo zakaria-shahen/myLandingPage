@@ -22,7 +22,6 @@ const mainSelector = document.querySelector('main');
 const countSection = mainSelector.querySelectorAll('section').length; // get total number section
 const fragment = document.createDocumentFragment();
 let hasSectionActive = '#section1';
-
 /**
  * End Global Variables
  * Start Helper Functions
@@ -32,46 +31,40 @@ let hasSectionActive = '#section1';
 function createLiNave() { 
     
     // loop create section 
-    for (let i = 1; i <= countSection; i++){
+    for (let i = 0; i <= countSection; i++){
+
         // create <li> append <a>
         const newElement = document.createElement('li');
         const newATag = document.createElement('a');
-        newATag.href = '#section' + i;
 
-        const headerSelector = document.querySelector('#section' + i); // i => number section
-        newATag.innerText = headerSelector.getAttribute('data-nav'); // add text header 
-        newATag.className = 'menu__link'; // add class in a tag 
-        
+
+        if (i === 0){
+            newATag.href = 'javascript:void(0);';
+            newATag.setAttribute('onclick', 'navbarPhoneShowHidden()');
+            newATag.className = 'menu__link menu__link__phone las la-bars';
+            // newATag.style = 'font-size: 2.5em; padding: 0.3em;';
+
+        } else {
+            newATag.href = '#section' + i;
+
+            const headerSelector = document.querySelector('#section' + i); // i => number section
+            newATag.innerText = headerSelector.getAttribute('data-nav'); // add text header 
+            newATag.className = 'menu__link'; // add class in a tag 
+        }
+
         newElement.appendChild(newATag); // <li> append <a>
         fragment.appendChild(newElement);//  fragment append <li>
+
     }
+
     navSelector.appendChild(fragment); // navbar append fragment
 }
 
 
-// change active 'a' tag/Element by scroll
-function aActiveChangeScroll(event){
-    // for (let i = 0; i < countSection; i++){
-        // const section = document.querySelectorAll('section')[0];
-        // const positionSection = section.getBoundingClientRect();
-        // const positionUser = window.getBoundingClientRect();
-        // console.log(positionSection);
-        
-    // }
-    // console.log(event);
-    
-    showNavbar();
 
-}
-
-function showNavbar(event = 0) {
+function showNavbar() {
     navSelector.parentElement.style.display = 'block';
-    const n = setTimeout(hiddenNavbar, 7000);
-    if (event !== 0){
-        clearTimeout(n);
-
-    }
-    console.log(event);
+    // setTimeout(hiddenNavbar, 7000);
 }
 
 
@@ -96,8 +89,17 @@ function activeAElement(aElementNew) {
 // change active section  
 function active(event) {
 
-    const eventId = event.srcElement.hash;
-    if (eventId !== hasSectionActive){
+    const eventId = '#' + event.target.id;
+    if (event.target.nodeName === 'HEADER') {
+        // remove class active section 
+        const sectionActiveNow = document.querySelector(hasSectionActive);
+        sectionActiveNow.removeAttribute('class');
+
+        // remove active navbar
+        const lisActiveNow = document.querySelector('a[href="' + hasSectionActive + '"]');    
+        lisActiveNow.classList.remove('active');
+    
+    } else if (eventId !== hasSectionActive){
         // remove class active 
         const sectionActiveNow = document.querySelector(hasSectionActive);
         sectionActiveNow.removeAttribute('class');
@@ -107,14 +109,21 @@ function active(event) {
         sectionActiveNew.className = 'your-active-class'; 
 
         activeAElement(eventId);  
-        hasSectionActive = eventId; // change active save
+        hasSectionActive = eventId; // change active save 
     } else {
         activeAElement(eventId);
     }
     
    
 }
+
+function navbarPhoneShowHidden(){
+    const nav = document.querySelector('.navbar__menu');
+    nav.classList.toggle('navbar__menu__show');
     
+} 
+
+
 /**
  * End Helper Functions
  * Begin Main Functions
@@ -122,18 +131,24 @@ function active(event) {
 */
 
 
-
-
 // build the nav
 
-createLiNave(); // create li an a tags/Element
-
-navSelector.addEventListener("click", active); // Event Click a tag nav bar;
-navSelector.parentElement.addEventListener("mouseenter", showNavbar); // Event Click a tag nav bar;
 
 
 
 // Add class 'active' to section when near top of viewport
+let scroll = new IntersectionObserver(function (events){
+    events.forEach(function (event){
+        if (event.isIntersecting){
+            active(event);
+
+        } 
+    }); 
+ }, {rootMargin: "0% 0% -50% 0%"});
+
+
+
+
 
 
 // Scroll to anchor ID using scrollTO event
@@ -146,11 +161,11 @@ navSelector.parentElement.addEventListener("mouseenter", showNavbar); // Event C
 */
 
 // Build menu 
+createLiNave();
 
 // Scroll to section on link click
-window.addEventListener('scroll', aActiveChangeScroll);
-
-
+mainSelector.querySelectorAll('section').forEach(function (section){scroll.observe(section)}); // view section
+scroll.observe(mainSelector.querySelector('header')); // view header 
 
 // Set sections as active
 
