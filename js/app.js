@@ -24,6 +24,7 @@ const fragment = document.createDocumentFragment();
 const divIconUP = document.querySelector('.up__ico__container');
 
 let hasSectionActive = '#section1';
+let navbarPhoneStatus = null; //true =>  show || false => hidden || null => display not phone 
 /**
  * End Global Variables
  * Start Helper Functions
@@ -91,10 +92,25 @@ function active(event) {
 
 }
 
-// show and hidden navbar list at Phone view
-function navbarPhoneShowHidden() {
+// show and hidden navbar list at Phone view + change icon
+function navbarPhoneOpenClose() {
+
+    // open or close navbar list at phone view
     const navbarPhone = document.querySelector('.navbar__menu');
     navbarPhone.classList.toggle('navbar__menu__show');
+
+    // change status variable and change icon 
+    const navbarIcon = document.querySelector('#navbar_icon');
+    if (navbarPhoneStatus === true) {
+        // close navbar
+        navbarPhoneStatus = false;
+        navbarIcon.className = 'menu__link menu__link__phone las la-bars';
+    } else {
+        // open navbar
+        navbarPhoneStatus = true;
+        navbarIcon.className = 'menu__link menu__link__phone las la-times';
+
+    }
 
 }
 
@@ -112,6 +128,36 @@ function upTopButtonShow() {
 
 }
 
+
+// scroll smooth 
+function scrollSmooth(event) {
+    event.preventDefault();
+    const href = event.target.hash;
+    const positionTarget = document.querySelector(href);
+
+    // if !null => button navbar | else => button top 
+    let top = (positionTarget !== null) ? positionTarget.offsetTop : 0;
+
+    // go to target 
+    window.scroll({
+        top: top,
+        behavior: 'smooth'
+    });
+
+    // if display phone 
+    if (navbarPhoneStatus === true) {
+        // close navbar and change icon
+        navbarPhoneOpenClose();
+        const navbarIcon = document.querySelector('#navbar_icon');
+        navbarIcon.classList.remove('la-times');
+        navbarIcon.classList.add('la-bars');
+        // top -= 15;
+    }
+
+
+
+
+}
 
 
 
@@ -135,7 +181,8 @@ function createLiNave() {
         if (i === 0) {
             // create icon navbar for Phone 
             newATag.href = 'javascript:void(0);';
-            newATag.setAttribute('onclick', 'navbarPhoneShowHidden()');
+            newATag.setAttribute('onclick', 'navbarPhoneOpenClose()');
+            newATag.setAttribute('id', 'navbar_icon');
             newATag.className = 'menu__link menu__link__phone las la-bars';
 
         } else {
@@ -164,12 +211,12 @@ let scroll = new IntersectionObserver(function(events) {
 
         }
     });
-}, { rootMargin: "0% 0% -50% 0%" });
+}, { rootMargin: '0% 0% -50% 0%' });
 
 
 
-// Scroll to anchor ID using scrollTO event
-// using css ( scroll-behavior: smooth;) 
+
+
 
 /**
  * End Main Functions
@@ -184,17 +231,11 @@ createLiNave();
 mainSelector.querySelectorAll('section').forEach(function(section) { scroll.observe(section) }); // view section
 scroll.observe(mainSelector.querySelector('header')); // view header 
 
+// Scroll to anchor ID using scrollTO event
+for (let i = 1; i <= countSection; i++) {
+    const link = document.querySelector(`a[href="#section${i}"]`);
+    link.addEventListener('click', scrollSmooth);
+}
 
-
-
-// // option 
-
-// function showNavbar() {
-//     navSelector.parentElement.style.display = 'block';
-//     setTimeout(hiddenNavbar, 7000);
-// }
-
-
-// function hiddenNavbar() {
-//     navSelector.parentElement.style.display = 'none';
-// }
+// up top button 
+divIconUP.addEventListener('click', scrollSmooth);
