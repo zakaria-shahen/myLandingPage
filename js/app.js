@@ -131,12 +131,16 @@ function upTopButtonShow() {
 
 // scroll smooth 
 function scrollSmooth(event) {
-    event.preventDefault();
-    const href = event.target.hash;
-    const positionTarget = document.querySelector(href);
+    let top = 0;
 
-    // if !null => button navbar | else => button top 
-    let top = (positionTarget !== null) ? positionTarget.offsetTop : 0;
+    // event = 0 ==> scroll top button
+    if (event !== 0) {
+        event.preventDefault();
+        const href = event.target.hash;
+
+        const positionTarget = document.querySelector(href);
+        top = positionTarget.offsetTop; // get Position target
+    }
 
     // go to target 
     window.scroll({
@@ -236,6 +240,3 @@ for (let i = 1; i <= countSection; i++) {
     const link = document.querySelector(`a[href="#section${i}"]`);
     link.addEventListener('click', scrollSmooth);
 }
-
-// up top button 
-divIconUP.addEventListener('click', scrollSmooth);
